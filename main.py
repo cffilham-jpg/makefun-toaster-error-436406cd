@@ -16,14 +16,16 @@ def main() -> None:
 
 
 def validate(path: str) -> None:
-    with open(path, "r", encoding="utf-8") as f:
-        text = f.read()
+    raw = open(path, "rb").read()
+    assert not raw.endswith(b"\n"), "entry must have no trailing newline"
+    text = raw.decode("utf-8")
+    assert text == LINE, "entry content drifted from LINE"
     assert "\n" not in text, "entry must be a single line"
     assert 1 <= len(text) <= 120, "entry must be 1-120 characters"
     assert text == text.strip(), "entry must have no leading/trailing whitespace"
     print(text)
     print(f"characters: {len(text)}")
-    print(f"bytes: {len(text.encode('utf-8'))}")
+    print(f"bytes: {len(raw)}")
 
 
 if __name__ == "__main__":
